@@ -1,169 +1,125 @@
-import React, { useState } from 'react';
-import { Text, View, TouchableOpacity, StyleSheet } from 'react-native';
+import React, { useState, useEffect } from "react";
+import { View, Text, TextInput, Button, StyleSheet, FlatList, TouchableOpacity, Alert } from "react-native";
 
-
-const App = () => {
-  const [input, setInput] = useState('');
-  const [resultado, setResultado] = useState('');
-
-  const handlePress = (value) => {
-    setInput(input + value);
-  };
-
-  const clearInput = () => {
-    setInput('');
-    setResultado('');
-  };
-
-  const handlePercentage = () => {
-    const valorTotal = 100; 
-    const porcentagem = input; 
-
-    const resultado = (valorTotal * porcentagem) / 100;
-    setResult(`Resultado: ${resultado}`);
-  };
-
-  const calculateResult = () => {
-    try {
-      setResultado(eval(input));
-    } catch {
-      setResultado('Error');
-    }
-  };
-
-  return (
-    <View style={styles.container}>
-      <Text style={styles.visor}>{input || '0'}</Text>
-      <Text style={styles.resultado}>Resultado: {resultado}</Text>
-      <View style={styles.buttonRow}>
-      <TouchableOpacity style={styles.buttond} onPress={clearInput}>
-          <Text style={styles.buttonText}>C</Text>
-        </TouchableOpacity>
-      <TouchableOpacity style={styles.buttonc} onPress={() => handlePress('()')}>
-          <Text style={styles.buttonText}>()</Text>
-        </TouchableOpacity>
-      <TouchableOpacity style={styles.buttonc} onPress={() => handlePercentage('%')}>
-          <Text style={styles.buttonText}>%</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.buttonc} onPress={() => handlePress('/')}>
-          <Text style={styles.buttonText}>/</Text>
-        </TouchableOpacity>
-        {[7, 8, 9].map((num) => (
-          <TouchableOpacity key={num} style={styles.button} onPress={() => handlePress(num.toString())}>
-            <Text style={styles.buttonText}>{num}</Text>
-          </TouchableOpacity>
-        ))}
-        <TouchableOpacity style={styles.buttonc} onPress={() => handlePress('*')}>
-          <Text style={styles.buttonText}>*</Text>
-        </TouchableOpacity>
-      </View>
-      <View style={styles.buttonRow}>
-        {[4, 5, 6].map((num) => (
-          <TouchableOpacity key={num} style={styles.button} onPress={() => handlePress(num.toString())}>
-            <Text style={styles.buttonText}>{num}</Text>
-          </TouchableOpacity>
-        ))}
-        <TouchableOpacity style={styles.buttonc} onPress={() => handlePress('-')}>
-          <Text style={styles.buttonText}>-</Text>
-        </TouchableOpacity>
-      </View>
-      <View style={styles.buttonRow}>
-        {[1, 2, 3].map((num) => (
-          <TouchableOpacity key={num} style={styles.button} onPress={() => handlePress(num.toString())}>
-            <Text style={styles.buttonText}>{num}</Text>
-          </TouchableOpacity>
-        ))}
-        <TouchableOpacity style={styles.buttonc} onPress={() => handlePress('+')}>
-          <Text style={styles.buttonText}>+</Text>
-        </TouchableOpacity>
-      </View>
-      <View style={styles.buttonRow}>
-        <TouchableOpacity style={styles.buttonc} onPress={() => handlePress('(-')}>
-          <Text style={styles.buttonText}>+/-</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.button} onPress={() => handlePress('0')}>
-          <Text style={styles.buttonText}>0</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.buttonc} onPress={() => handlePress(',')}>
-          <Text style={styles.buttonText}>,</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.buttoni} onPress={calculateResult}>
-          <Text style={styles.buttonText}>=</Text>
-        </TouchableOpacity>
-      </View>
-
-    </View>
-  );
-};
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    padding: 20,
-    backgroundColor: 'black'
-  },
-  visor: {
-    fontSize: 30,
-    marginBottom: 20,
-    color: 'white'
-  },
-  resultado: {
-    fontSize: 20,
-    marginBottom: 20,
-    color: 'white'
-  },
-  buttonRow: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    width: '100%',
-    justifyContent: 'space-between',
-    
-  },
-  button: {
-    width: '20%',
-    backgroundColor: '#333333',
-    padding: 20,
-    alignItems: 'center',
-    margin: 5,
-    borderRadius: 5,
-    marginTop: 30,
-    borderRadius:360
-  },
-  buttonc: {
-    width: '20%',
-    backgroundColor: '#5F5F5F',
-    padding: 20,
-    alignItems: 'center',
-    margin: 5,
-    borderRadius: 5,
-    marginTop: 30,
-    borderRadius:360
-  },
-  buttond: {
-    width: '20%',
-    backgroundColor: '#5F5F5F',
-    padding: 20,
-    alignItems: 'center',
-    margin: 5,
-    borderRadius: 5,
-    marginTop: 30,
-    borderRadius:360
-  },
-  buttoni: {
-    width: '20%',
-    backgroundColor: '#32CD32',
-    padding: 20,
-    alignItems: 'center',
-    margin: 5,
-    borderRadius: 5,
-    marginTop: 30,
-    borderRadius:360
-  },
-  buttonText: {
-    fontSize: 20,
-  },
+    container: {
+        padding: 20,
+    },
+    item: {
+        padding: 10,
+        fontSize: 18,
+    },
+    riscado: {
+        textDecorationLine: 'line-through',
+        color: 'grey',
+    },
+    amador: {
+        backgroundColor: 'lightblue',
+        margin: 5,
+        borderRadius: 5,
+    },
+    inputContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        marginBottom: 20,
+    },
+    input: {
+        flex: 1,
+        borderColor: 'gray',
+        borderWidth: 1,
+        padding: 10,
+        borderRadius: 5,
+        marginRight: 10,
+    }
 });
 
-export default App;
+
+const Tarefas = [
+    { id: 1, descricao: 'Comer torrada antes de dormir', feito: false, dataCriacao: new Date() },
+    { id: 2, descricao: 'Jogar Fortnite', feito: false, dataCriacao: new Date() },
+    { id: 3, descricao: 'Preparar aula da 2ª fase', feito: false, dataCriacao: new Date() },
+    { id: 4, descricao: 'Dar comida para os gatos', feito: false, dataCriacao: new Date() },
+];
+
+
+export default function ListaTarefas() {
+    const [tarefas, setTarefas] = useState(Tarefas);
+    const [novaTarefa, setNovaTarefa] = useState('');
+
+
+    const toggleFeito = (id) => {
+        setTarefas(tarefas.map(tarefa =>
+            tarefa.id === id ? { ...tarefa, feito: !tarefa.feito } : tarefa
+        ));
+    };
+
+
+    const adicionarTarefa = () => {
+        if (novaTarefa.trim()) {
+            const nova = {
+                id: tarefas.length + 1,
+                descricao: novaTarefa,
+                feito: false,
+                dataCriacao: new Date(),
+            };
+            setTarefas([...tarefas, nova]);
+            setNovaTarefa('');
+        } else {
+            Alert.alert('Erro', 'A descrição da tarefa não pode estar vazia.');
+        }
+    };
+
+
+    const verificarData = () => {
+        const umaSemana = 7 * 24 * 60 * 60 * 1000;
+        const agora = new Date();
+        const tarefasAtualizadas = tarefas.filter(tarefa => agora - tarefa.dataCriacao < umaSemana);
+
+
+        if (tarefasAtualizadas.length < tarefas.length) {
+            Alert.alert("Aviso", "Algumas tarefas desapareceram porque foram criadas há mais de uma semana.");
+        }
+
+
+        setTarefas(tarefasAtualizadas);
+    };
+
+
+    useEffect(() => {
+        const intervalo = setInterval(verificarData, 1000 * 60 * 60 * 24);
+        return () => clearInterval(intervalo);
+    }, [tarefas]);
+
+
+    return (
+        <View style={styles.container}>
+            <View style={styles.inputContainer}>
+                <TextInput
+                    style={styles.input}
+                    placeholder="Nova tarefa"
+                    value={novaTarefa}
+                    onChangeText={setNovaTarefa}
+                />
+                <Button title="Adicionar" onPress={adicionarTarefa} />
+            </View>
+            <FlatList
+                data={tarefas}
+                keyExtractor={item => item.id.toString()}
+                renderItem={({ item }) => (
+                    <TouchableOpacity
+                        style={styles.amador}
+                        onPress={() => toggleFeito(item.id)}
+                    >
+                        <Text style={[styles.item, item.feito && styles.riscado]}>
+                            {item.descricao}
+                        </Text>
+                    </TouchableOpacity>
+                )}
+            />
+        </View>
+    );
+}
+
+
+
